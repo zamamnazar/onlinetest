@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { User, UserRole, Test, Question, Attempt, Option } from './types';
 import { storageService } from './services/storage';
 import { generateQuestions, analyzePerformance } from './services/geminiService';
+import ArchitectureDoc from './components/ArchitectureDoc';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell
 } from 'recharts';
@@ -10,7 +11,7 @@ import {
   Settings, Trash2, User as UserIcon, FileText, BrainCircuit, Play,
   Home, PieChart as PieChartIcon, Search, ChevronRight, Check, X,
   GraduationCap, Layout, Sparkles, ArrowLeft, MoreHorizontal, Calendar,
-  Globe, Smartphone, Coffee, Code, Server, Database, Cpu, Briefcase, ShieldAlert
+  Globe, Smartphone, Coffee, Code, Server, Database, Cpu, Briefcase, ShieldAlert, FileJson
 } from 'lucide-react';
 
 // --- CONSTANTS & THEMES ---
@@ -527,7 +528,7 @@ const ResultScreen = ({ attempt, test, onHome }: { attempt: Attempt, test: Test,
 
       <div className="fixed bottom-0 w-full max-w-md bg-white border-t border-slate-100 p-6 z-30">
          <button onClick={onHome} className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-            Back to Home
+            Back to Reports
          </button>
       </div>
     </MobileWrapper>
@@ -536,7 +537,7 @@ const ResultScreen = ({ attempt, test, onHome }: { attempt: Attempt, test: Test,
 
 // --- TEACHER COMPONENTS ---
 
-const TeacherReports = ({ attempts, tests }: { attempts: Attempt[], tests: Test[] }) => {
+const TeacherReports = ({ attempts, tests, onViewAttempt }: { attempts: Attempt[], tests: Test[], onViewAttempt: (a: Attempt) => void }) => {
   return (
     <div className="pb-24 animate-fade-in pt-12 px-6">
       <h2 className="text-2xl font-bold mb-6 text-slate-800">Student Reports</h2>
@@ -554,7 +555,11 @@ const TeacherReports = ({ attempts, tests }: { attempts: Attempt[], tests: Test[
               const percentage = Math.round((attempt.score / attempt.totalQuestions) * 100);
               const isPass = percentage >= 50; 
               return (
-                 <div key={attempt.id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3">
+                 <div 
+                    key={attempt.id} 
+                    onClick={() => onViewAttempt(attempt)}
+                    className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3 cursor-pointer hover:bg-slate-50 transition-colors active:scale-95"
+                 >
                     <div className="flex justify-between items-start">
                        <div className="flex gap-3">
                           <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold border border-indigo-100">
@@ -571,7 +576,10 @@ const TeacherReports = ({ attempts, tests }: { attempts: Attempt[], tests: Test[
                     </div>
                     <div className="flex justify-between items-center text-sm text-slate-600 border-t border-slate-50 pt-3">
                        <span className="flex items-center gap-1"><Check size={14} className="text-slate-400"/> Score: <span className="font-bold text-slate-900">{attempt.score}/{attempt.totalQuestions}</span></span>
-                       <span className="text-slate-400 text-xs">{new Date(attempt.completedAt).toLocaleDateString()}</span>
+                       <span className="flex items-center gap-1 text-slate-400 text-xs">
+                         {new Date(attempt.completedAt).toLocaleDateString()}
+                         <ChevronRight size={14} />
+                       </span>
                     </div>
                  </div>
               );
@@ -582,7 +590,7 @@ const TeacherReports = ({ attempts, tests }: { attempts: Attempt[], tests: Test[
   );
 };
 
-const TeacherDash = ({ user, tests, onCreate, onReports }: { user: User, tests: Test[], onCreate: () => void, onReports: () => void }) => (
+const TeacherDash = ({ user, tests, onCreate, onReports, onShowArch }: { user: User, tests: Test[], onCreate: () => void, onReports: () => void, onShowArch: () => void }) => (
   <div className="pb-24 animate-fade-in">
     <div className={`pt-12 pb-10 px-6 rounded-b-[40px] ${COLORS.primaryGradient} text-white shadow-lg`}>
        <div className="flex justify-between items-center mb-6">
@@ -627,6 +635,10 @@ const TeacherDash = ({ user, tests, onCreate, onReports }: { user: User, tests: 
           <button onClick={onReports} className="min-w-[100px] h-[100px] bg-white rounded-3xl shadow-sm border border-slate-50 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-95">
              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><PieChartIcon size={20} /></div>
              <span className="text-xs font-bold text-slate-700">Reports</span>
+          </button>
+          <button onClick={onShowArch} className="min-w-[100px] h-[100px] bg-white rounded-3xl shadow-sm border border-slate-50 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-95">
+             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><FileJson size={20} /></div>
+             <span className="text-xs font-bold text-slate-700">Product Design</span>
           </button>
        </div>
 
@@ -791,6 +803,10 @@ export default function App() {
   const [activeTest, setActiveTest] = useState<Test | null>(null);
   const [lastAttempt, setLastAttempt] = useState<Attempt | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  
+  // New State for Features
+  const [showArch, setShowArch] = useState(false);
+  const [viewingReport, setViewingReport] = useState<Attempt | null>(null);
 
   // Data
   const [tests, setTests] = useState<Test[]>([]);
@@ -822,6 +838,17 @@ export default function App() {
   };
 
   const renderContent = () => {
+     if (showArch) {
+        return <ArchitectureDoc onClose={() => setShowArch(false)} />;
+     }
+
+     if (viewingReport) {
+        const t = tests.find(x => x.id === viewingReport.testId);
+        if (t) {
+            return <ResultScreen attempt={viewingReport} test={t} onHome={() => setViewingReport(null)} />;
+        }
+     }
+
      if (activeTest) {
         if (lastAttempt && lastAttempt.testId === activeTest.id) {
            return <ResultScreen attempt={lastAttempt} test={activeTest} onHome={() => { setActiveTest(null); setLastAttempt(null); }} />
@@ -887,8 +914,8 @@ export default function App() {
               </>
            ) : (
               <>
-                 {activeTab === 'DASH' && <TeacherDash user={user!} tests={tests} onCreate={() => setIsCreating(true)} onReports={() => setActiveTab('REPORTS')} />}
-                 {activeTab === 'REPORTS' && <TeacherReports attempts={attempts} tests={tests} />}
+                 {activeTab === 'DASH' && <TeacherDash user={user!} tests={tests} onCreate={() => setIsCreating(true)} onReports={() => setActiveTab('REPORTS')} onShowArch={() => setShowArch(true)} />}
+                 {activeTab === 'REPORTS' && <TeacherReports attempts={attempts} tests={tests} onViewAttempt={setViewingReport} />}
                  {activeTab === 'CREATE' && <div className="p-8 text-center text-slate-400">Tap Create on Dashboard</div>}
                  {activeTab === 'PROFILE' && (
                     <div className="pt-12 px-6 flex flex-col items-center">
