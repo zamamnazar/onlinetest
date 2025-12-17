@@ -9,13 +9,14 @@ import {
   BookOpen, Clock, LogOut, Plus, 
   Settings, Trash2, User as UserIcon, FileText, BrainCircuit, Play,
   Home, PieChart as PieChartIcon, Search, ChevronRight, Check, X,
-  GraduationCap, Layout, Sparkles, ArrowLeft, MoreHorizontal, Calendar
+  GraduationCap, Layout, Sparkles, ArrowLeft, MoreHorizontal, Calendar,
+  Globe, Smartphone, Coffee, Code, Server, Database, Cpu, Briefcase, ShieldAlert
 } from 'lucide-react';
 
 // --- CONSTANTS & THEMES ---
 
 const COLORS = {
-  primaryGradient: "bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600",
+  primaryGradient: "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500",
   secondaryGradient: "bg-gradient-to-r from-blue-400 to-cyan-500",
   correct: "#22c55e",
   wrong: "#ef4444",
@@ -24,15 +25,23 @@ const COLORS = {
 };
 
 const SUBJECT_ICONS: Record<string, any> = {
-  'Physics': { icon: Sparkles, color: 'text-purple-600', bg: 'bg-purple-100' },
-  'Chemistry': { icon: Layout, color: 'text-pink-600', bg: 'bg-pink-100' },
-  'Math': { icon: PieChartIcon, color: 'text-orange-600', bg: 'bg-orange-100' },
+  'Computer Network': { icon: Globe, color: 'text-blue-600', bg: 'bg-blue-100' },
+  'JAVA': { icon: Coffee, color: 'text-orange-600', bg: 'bg-orange-100' },
+  'C Program': { icon: Code, color: 'text-slate-600', bg: 'bg-slate-100' },
+  'Android': { icon: Smartphone, color: 'text-green-600', bg: 'bg-green-100' },
+  'Data Structures': { icon: Database, color: 'text-purple-600', bg: 'bg-purple-100' },
+  'DBMS': { icon: Server, color: 'text-indigo-600', bg: 'bg-indigo-100' },
+  'OS': { icon: Cpu, color: 'text-red-600', bg: 'bg-red-100' },
+  'Web Dev': { icon: Layout, color: 'text-cyan-600', bg: 'bg-cyan-100' },
+  'Software Eng': { icon: Briefcase, color: 'text-yellow-600', bg: 'bg-yellow-100' },
+  'Cyber Security': { icon: ShieldAlert, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+  'Python': { icon: Code, color: 'text-blue-500', bg: 'bg-blue-50' },
   'Default': { icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-100' }
 };
 
 // --- HELPER COMPONENTS ---
 
-const MobileWrapper = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
+const MobileWrapper: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
   <div className="min-h-screen bg-slate-100 flex justify-center">
     <div className={`w-full max-w-md bg-slate-50 min-h-screen shadow-2xl relative overflow-hidden flex flex-col ${className}`}>
       {children}
@@ -51,7 +60,7 @@ const BottomNav = ({ role, activeTab, onTabChange }: { role: UserRole, activeTab
     : [
         { id: 'DASH', icon: Layout, label: 'Dash' },
         { id: 'CREATE', icon: Plus, label: 'Create' },
-        { id: 'STUDENTS', icon: GraduationCap, label: 'Students' },
+        { id: 'REPORTS', icon: PieChartIcon, label: 'Reports' },
         { id: 'PROFILE', icon: UserIcon, label: 'Profile' },
     ];
 
@@ -63,11 +72,11 @@ const BottomNav = ({ role, activeTab, onTabChange }: { role: UserRole, activeTab
           <button 
             key={tab.id} 
             onClick={() => onTabChange(tab.id)}
-            className={`flex flex-col items-center gap-1 transition-all duration-300 ${isActive ? 'text-pink-600 -translate-y-1' : 'text-slate-400'}`}
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${isActive ? 'text-indigo-600 -translate-y-1' : 'text-slate-400'}`}
           >
             <tab.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
             <span className="text-[10px] font-medium tracking-wide">{tab.label}</span>
-            {isActive && <div className="w-1 h-1 bg-pink-600 rounded-full mt-0.5" />}
+            {isActive && <div className="w-1 h-1 bg-indigo-600 rounded-full mt-0.5" />}
           </button>
         )
       })}
@@ -75,7 +84,7 @@ const BottomNav = ({ role, activeTab, onTabChange }: { role: UserRole, activeTab
   );
 };
 
-const SubjectTile = ({ subject, count, onClick }: { subject: string, count: number, onClick: () => void }) => {
+const SubjectTile: React.FC<{ subject: string; count: number; onClick: () => void }> = ({ subject, count, onClick }) => {
   const style = SUBJECT_ICONS[subject] || SUBJECT_ICONS['Default'];
   const Icon = style.icon;
   return (
@@ -84,7 +93,7 @@ const SubjectTile = ({ subject, count, onClick }: { subject: string, count: numb
         <Icon size={24} />
       </div>
       <div>
-        <h4 className="font-bold text-slate-800 text-lg">{subject}</h4>
+        <h4 className="font-bold text-slate-800 text-sm">{subject}</h4>
         <p className="text-xs text-slate-400 font-medium">{count} Tests</p>
       </div>
     </button>
@@ -102,13 +111,13 @@ const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
   return (
     <MobileWrapper className={COLORS.primaryGradient}>
       <div className="flex-1 flex flex-col items-center justify-center text-white p-8 animate-fade-in">
-        <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center mb-6 shadow-xl">
-           <Sparkles size={48} className="text-white" />
+        <div className="w-28 h-28 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center mb-6 shadow-xl">
+           <Cpu size={56} className="text-white" />
         </div>
-        <h1 className="text-4xl font-bold tracking-tight mb-2">Smart MCQ</h1>
-        <p className="text-white/80 font-medium text-lg">Practice. Analyze. Improve.</p>
+        <h1 className="text-3xl font-bold tracking-tight mb-2 text-center">JMC-CS MCQ PLATFORM</h1>
+        <p className="text-white/80 font-medium text-lg">Computer Science Mastery</p>
       </div>
-      <div className="pb-12 text-center text-white/60 text-sm">v1.0.0</div>
+      <div className="pb-12 text-center text-white/60 text-sm">v2.0.0</div>
     </MobileWrapper>
   );
 };
@@ -118,28 +127,28 @@ const RoleSelectionScreen = ({ onSelect }: { onSelect: (role: UserRole) => void 
     <MobileWrapper className="bg-white p-6">
       <div className="flex-1 flex flex-col justify-center gap-8">
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold text-slate-800">Who are you?</h2>
-          <p className="text-slate-500">Choose your role to continue</p>
+          <h2 className="text-3xl font-bold text-slate-800">Welcome</h2>
+          <p className="text-slate-500">JMC-CS Department Portal</p>
         </div>
         
         <div className="space-y-4">
-          <button onClick={() => onSelect(UserRole.STUDENT)} className="w-full bg-slate-50 hover:bg-orange-50 border-2 border-slate-100 hover:border-orange-200 rounded-3xl p-6 flex items-center gap-6 transition-all group">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 group-hover:scale-110 transition-transform">
+          <button onClick={() => onSelect(UserRole.STUDENT)} className="w-full bg-slate-50 hover:bg-indigo-50 border-2 border-slate-100 hover:border-indigo-200 rounded-3xl p-6 flex items-center gap-6 transition-all group">
+            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 group-hover:scale-110 transition-transform">
               <GraduationCap size={32} />
             </div>
             <div className="text-left">
               <h3 className="text-xl font-bold text-slate-800">Student</h3>
-              <p className="text-slate-500 text-sm">I want to learn and take tests</p>
+              <p className="text-slate-500 text-sm">Access Tests & Results</p>
             </div>
           </button>
 
           <button onClick={() => onSelect(UserRole.TEACHER)} className="w-full bg-slate-50 hover:bg-purple-50 border-2 border-slate-100 hover:border-purple-200 rounded-3xl p-6 flex items-center gap-6 transition-all group">
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
-              <BookOpen size={32} />
+              <Server size={32} />
             </div>
             <div className="text-left">
               <h3 className="text-xl font-bold text-slate-800">Teacher</h3>
-              <p className="text-slate-500 text-sm">I want to create tests</p>
+              <p className="text-slate-500 text-sm">Manage CS Assessments</p>
             </div>
           </button>
         </div>
@@ -164,7 +173,7 @@ const AuthScreen = ({ role, onLogin }: { role: UserRole, onLogin: (u: User) => v
     } else {
       const user = storageService.login(email, password);
       if (user) onLogin(user);
-      else alert("Invalid credentials (try student@nexus.com / 123)");
+      else alert("Invalid credentials (try student@jmc.com / 123)");
     }
   };
 
@@ -173,7 +182,7 @@ const AuthScreen = ({ role, onLogin }: { role: UserRole, onLogin: (u: User) => v
       <div className="h-64 rounded-b-[40px] bg-slate-900 overflow-hidden relative">
          <div className={`absolute inset-0 opacity-80 ${COLORS.primaryGradient}`} />
          <div className="absolute inset-0 flex flex-col justify-end p-8 pb-12">
-            <h1 className="text-4xl font-bold text-white mb-2">Welcome Back</h1>
+            <h1 className="text-4xl font-bold text-white mb-2">CS Portal</h1>
             <p className="text-white/80">Sign in to continue as {role.toLowerCase()}</p>
          </div>
       </div>
@@ -183,16 +192,16 @@ const AuthScreen = ({ role, onLogin }: { role: UserRole, onLogin: (u: User) => v
           {isRegister && (
              <div className="space-y-2">
                <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
-               <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full bg-slate-50 border-none p-4 rounded-2xl text-slate-800 font-medium focus:ring-2 focus:ring-pink-500" placeholder="John Doe" />
+               <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full bg-slate-50 border-none p-4 rounded-2xl text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500" placeholder="John Doe" />
              </div>
           )}
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-slate-50 border-none p-4 rounded-2xl text-slate-800 font-medium focus:ring-2 focus:ring-pink-500" placeholder="hello@example.com" />
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-slate-50 border-none p-4 rounded-2xl text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500" placeholder="user@jmc.com" />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-slate-50 border-none p-4 rounded-2xl text-slate-800 font-medium focus:ring-2 focus:ring-pink-500" placeholder="••••••••" />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-slate-50 border-none p-4 rounded-2xl text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500" placeholder="••••••••" />
           </div>
 
           <button type="submit" className={`w-full py-4 rounded-2xl text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all active:scale-95 ${COLORS.primaryGradient}`}>
@@ -203,7 +212,7 @@ const AuthScreen = ({ role, onLogin }: { role: UserRole, onLogin: (u: User) => v
         <div className="mt-8 text-center">
           <p className="text-slate-400 text-sm">
             {isRegister ? 'Already have an account?' : "Don't have an account?"}
-            <button onClick={() => setIsRegister(!isRegister)} className="ml-1 text-pink-600 font-bold hover:underline">
+            <button onClick={() => setIsRegister(!isRegister)} className="ml-1 text-indigo-600 font-bold hover:underline">
               {isRegister ? 'Login' : 'Sign Up'}
             </button>
           </p>
@@ -227,22 +236,22 @@ const StudentHome = ({ user, tests, onSelectTest }: { user: User, tests: Test[],
              <img src={user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt="avatar" className="w-12 h-12 rounded-full border-2 border-white/50 bg-white/20" />
              <div>
                <h2 className="font-bold text-lg">Hi, {user.name.split(' ')[0]}</h2>
-               <p className="text-white/70 text-sm">{user.classGrade || 'Student'}</p>
+               <p className="text-white/70 text-sm">{user.classGrade || 'CS Student'}</p>
              </div>
           </div>
           <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
             <Search size={20} className="text-white" />
           </button>
         </div>
-        <h1 className="text-3xl font-bold mb-2">Ready to learn?</h1>
+        <h1 className="text-3xl font-bold mb-2">CS Dashboard</h1>
         <div className="absolute -bottom-6 left-6 right-6">
            <div className="bg-white p-4 rounded-2xl shadow-lg flex justify-between items-center">
               <div>
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Weekly Goal</p>
-                <p className="text-slate-800 font-bold text-lg">12/20 Tests</p>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Assigned</p>
+                <p className="text-slate-800 font-bold text-lg">{tests.length} Tests</p>
               </div>
-              <div className="w-12 h-12 rounded-full border-4 border-pink-500 flex items-center justify-center text-pink-600 font-bold text-xs">
-                60%
+              <div className="w-12 h-12 rounded-full border-4 border-indigo-500 flex items-center justify-center text-indigo-600 font-bold text-xs">
+                Active
               </div>
            </div>
         </div>
@@ -251,18 +260,18 @@ const StudentHome = ({ user, tests, onSelectTest }: { user: User, tests: Test[],
       {/* Content */}
       <div className="px-6 mt-10">
         <div className="flex justify-between items-end mb-4">
-          <h3 className="font-bold text-slate-800 text-xl">Subjects</h3>
-          <button className="text-pink-600 text-sm font-bold">See All</button>
+          <h3 className="font-bold text-slate-800 text-xl">Topics</h3>
+          <button className="text-indigo-600 text-sm font-bold">See All</button>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-8">
            {subjects.length > 0 ? subjects.map(sub => (
              <SubjectTile key={sub} subject={sub} count={tests.filter(t => t.subject === sub).length} onClick={() => {}} />
            )) : (
-             <p className="col-span-2 text-slate-400 text-sm">No subjects available yet.</p>
+             <p className="col-span-2 text-slate-400 text-sm">No topics available yet.</p>
            )}
         </div>
 
-        <h3 className="font-bold text-slate-800 text-xl mb-4">Recommended Tests</h3>
+        <h3 className="font-bold text-slate-800 text-xl mb-4">Recommended</h3>
         <div className="space-y-4">
           {tests.map(test => (
              <div key={test.id} onClick={() => onSelectTest(test)} className="bg-white p-5 rounded-3xl shadow-sm border border-slate-50 flex items-center justify-between group active:scale-95 transition-transform">
@@ -271,13 +280,13 @@ const StudentHome = ({ user, tests, onSelectTest }: { user: User, tests: Test[],
                     <BookOpen size={20} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-800">{test.title}</h4>
+                    <h4 className="font-bold text-slate-800 text-sm">{test.title}</h4>
                     <p className="text-xs text-slate-400 font-medium mt-1 flex items-center gap-2">
                        <Clock size={12} /> {test.durationMinutes} mins • {test.questions.length} Qs
                     </p>
                   </div>
                </div>
-               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-pink-100 group-hover:text-pink-600 transition-colors">
+               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
                   <Play size={14} fill="currentColor" />
                </div>
              </div>
@@ -347,7 +356,7 @@ const TestPlayer = ({ test, user, onComplete, onExit }: { test: Test, user: User
            <span>{test.questions.length} total</span>
         </div>
         <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-           <div className="h-full bg-pink-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
+           <div className="h-full bg-indigo-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
         </div>
       </div>
 
@@ -365,16 +374,16 @@ const TestPlayer = ({ test, user, onComplete, onExit }: { test: Test, user: User
                     onClick={() => setResponses({...responses, [currentQ.id]: opt.id})}
                     className={`w-full p-5 rounded-2xl flex items-center gap-4 border-2 transition-all ${
                        isSelected 
-                       ? 'border-pink-500 bg-pink-50' 
+                       ? 'border-indigo-500 bg-indigo-50' 
                        : 'border-slate-100 bg-white hover:bg-slate-50'
                     }`}
                  >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg border-2 ${
-                       isSelected ? 'bg-pink-500 border-pink-500 text-white' : 'bg-white border-slate-200 text-slate-400'
+                       isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white border-slate-200 text-slate-400'
                     }`}>
                        {letters[idx]}
                     </div>
-                    <span className={`text-left font-medium text-lg ${isSelected ? 'text-pink-900' : 'text-slate-600'}`}>
+                    <span className={`text-left font-medium text-lg ${isSelected ? 'text-indigo-900' : 'text-slate-600'}`}>
                        {opt.text}
                     </span>
                  </button>
@@ -396,7 +405,7 @@ const TestPlayer = ({ test, user, onComplete, onExit }: { test: Test, user: User
          {currentIndex === test.questions.length - 1 ? (
            <button 
              onClick={handleSubmit}
-             className={`flex-1 py-4 rounded-2xl font-bold text-white shadow-lg shadow-pink-200 ${COLORS.primaryGradient}`}
+             className={`flex-1 py-4 rounded-2xl font-bold text-white shadow-lg shadow-indigo-200 ${COLORS.primaryGradient}`}
            >
              Submit Test
            </button>
@@ -525,9 +534,55 @@ const ResultScreen = ({ attempt, test, onHome }: { attempt: Attempt, test: Test,
   );
 };
 
-// --- TEACHER DASHBOARD COMPONENTS ---
+// --- TEACHER COMPONENTS ---
 
-const TeacherDash = ({ user, tests, onCreate }: { user: User, tests: Test[], onCreate: () => void }) => (
+const TeacherReports = ({ attempts, tests }: { attempts: Attempt[], tests: Test[] }) => {
+  return (
+    <div className="pb-24 animate-fade-in pt-12 px-6">
+      <h2 className="text-2xl font-bold mb-6 text-slate-800">Student Reports</h2>
+      <div className="space-y-4">
+        {attempts.length === 0 ? (
+           <div className="text-center text-slate-400 py-10 bg-white rounded-2xl border border-slate-100 p-8">
+              <div className="mx-auto w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-300">
+                 <FileText size={32} />
+              </div>
+              <p>No test attempts found.</p>
+           </div>
+        ) : (
+           attempts.map(attempt => {
+              const test = tests.find(t => t.id === attempt.testId);
+              const percentage = Math.round((attempt.score / attempt.totalQuestions) * 100);
+              const isPass = percentage >= 50; 
+              return (
+                 <div key={attempt.id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3">
+                    <div className="flex justify-between items-start">
+                       <div className="flex gap-3">
+                          <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold border border-indigo-100">
+                             {attempt.studentName.charAt(0)}
+                          </div>
+                          <div>
+                             <h4 className="font-bold text-slate-800 text-lg">{attempt.studentName}</h4>
+                             <p className="text-xs text-slate-500 font-medium">{test?.title || 'Unknown Test'}</p>
+                          </div>
+                       </div>
+                       <div className={`px-3 py-1 rounded-full text-xs font-bold ${isPass ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          {percentage}%
+                       </div>
+                    </div>
+                    <div className="flex justify-between items-center text-sm text-slate-600 border-t border-slate-50 pt-3">
+                       <span className="flex items-center gap-1"><Check size={14} className="text-slate-400"/> Score: <span className="font-bold text-slate-900">{attempt.score}/{attempt.totalQuestions}</span></span>
+                       <span className="text-slate-400 text-xs">{new Date(attempt.completedAt).toLocaleDateString()}</span>
+                    </div>
+                 </div>
+              );
+           })
+        )}
+      </div>
+    </div>
+  );
+};
+
+const TeacherDash = ({ user, tests, onCreate, onReports }: { user: User, tests: Test[], onCreate: () => void, onReports: () => void }) => (
   <div className="pb-24 animate-fade-in">
     <div className={`pt-12 pb-10 px-6 rounded-b-[40px] ${COLORS.primaryGradient} text-white shadow-lg`}>
        <div className="flex justify-between items-center mb-6">
@@ -569,7 +624,7 @@ const TeacherDash = ({ user, tests, onCreate }: { user: User, tests: Test[], onC
              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"><BookOpen size={20} /></div>
              <span className="text-xs font-bold text-slate-700">Q-Bank</span>
           </button>
-          <button className="min-w-[100px] h-[100px] bg-white rounded-3xl shadow-sm border border-slate-50 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-95">
+          <button onClick={onReports} className="min-w-[100px] h-[100px] bg-white rounded-3xl shadow-sm border border-slate-50 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all active:scale-95">
              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><PieChartIcon size={20} /></div>
              <span className="text-xs font-bold text-slate-700">Reports</span>
           </button>
@@ -595,7 +650,7 @@ const TeacherDash = ({ user, tests, onCreate }: { user: User, tests: Test[], onC
 
 const CreateTestFlow = ({ user, onCancel, onSave }: { user: User, onCancel: () => void, onSave: (t: Test) => void }) => {
   const [step, setStep] = useState(1);
-  const [testDetails, setTestDetails] = useState({ title: '', subject: 'General', duration: 15, desc: '' });
+  const [testDetails, setTestDetails] = useState({ title: '', subject: 'Computer Network', duration: 15, desc: '' });
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQ, setCurrentQ] = useState({ text: '', opt1: '', opt2: '', opt3: '', opt4: '', correct: 0 });
   const [aiPrompt, setAiPrompt] = useState('');
@@ -645,7 +700,7 @@ const CreateTestFlow = ({ user, onCancel, onSave }: { user: User, onCancel: () =
        <div className="pt-12 px-6 pb-4 bg-white sticky top-0 z-10 border-b border-slate-100 flex justify-between items-center">
           <button onClick={onCancel} className="text-slate-400 font-medium">Cancel</button>
           <h2 className="font-bold text-slate-800">New Test</h2>
-          <button onClick={() => { if(step===1) setStep(2); else finalize(); }} className="text-pink-600 font-bold">
+          <button onClick={() => { if(step===1) setStep(2); else finalize(); }} className="text-indigo-600 font-bold">
              {step === 1 ? 'Next' : 'Publish'}
           </button>
        </div>
@@ -655,13 +710,13 @@ const CreateTestFlow = ({ user, onCancel, onSave }: { user: User, onCancel: () =
              <div className="space-y-6">
                 <div>
                    <label className="text-xs font-bold text-slate-400 uppercase ml-1">Test Title</label>
-                   <input value={testDetails.title} onChange={e => setTestDetails({...testDetails, title: e.target.value})} className="w-full bg-white p-4 rounded-2xl border border-slate-200 mt-2 font-bold text-slate-800 focus:border-pink-500 outline-none" placeholder="e.g. Physics Midterm" />
+                   <input value={testDetails.title} onChange={e => setTestDetails({...testDetails, title: e.target.value})} className="w-full bg-white p-4 rounded-2xl border border-slate-200 mt-2 font-bold text-slate-800 focus:border-indigo-500 outline-none" placeholder="e.g. Advanced Java" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                    <div>
                      <label className="text-xs font-bold text-slate-400 uppercase ml-1">Subject</label>
                      <select value={testDetails.subject} onChange={e => setTestDetails({...testDetails, subject: e.target.value})} className="w-full bg-white p-4 rounded-2xl border border-slate-200 mt-2 font-medium text-slate-800 outline-none">
-                        {Object.keys(SUBJECT_ICONS).map(s => <option key={s} value={s}>{s}</option>)}
+                        {Object.keys(SUBJECT_ICONS).filter(k => k !== 'Default').map(s => <option key={s} value={s}>{s}</option>)}
                      </select>
                    </div>
                    <div>
@@ -678,7 +733,7 @@ const CreateTestFlow = ({ user, onCancel, onSave }: { user: User, onCancel: () =
              <div className="space-y-6 pb-24">
                 <div className="bg-purple-50 p-4 rounded-2xl border border-purple-100 flex gap-2 items-center">
                    <Sparkles className="text-purple-600" size={20} />
-                   <input value={aiPrompt} onChange={e => setAiPrompt(e.target.value)} placeholder="Generate with AI (e.g. 'Thermodynamics')" className="bg-transparent flex-1 outline-none text-purple-900 placeholder:text-purple-300 text-sm" />
+                   <input value={aiPrompt} onChange={e => setAiPrompt(e.target.value)} placeholder="Generate with AI (e.g. 'Network Protocols')" className="bg-transparent flex-1 outline-none text-purple-900 placeholder:text-purple-300 text-sm" />
                    <button onClick={handleAi} disabled={isGenerating} className="text-xs font-bold bg-purple-200 text-purple-800 px-3 py-1.5 rounded-lg">{isGenerating ? '...' : 'Go'}</button>
                 </div>
 
@@ -688,7 +743,7 @@ const CreateTestFlow = ({ user, onCancel, onSave }: { user: User, onCancel: () =
                    <div className="space-y-2">
                       {[currentQ.opt1, currentQ.opt2, currentQ.opt3, currentQ.opt4].map((opt, idx) => (
                          <div key={idx} className="flex items-center gap-2">
-                            <button onClick={() => setCurrentQ({...currentQ, correct: idx})} className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${currentQ.correct === idx ? 'border-pink-500 bg-pink-500 text-white' : 'border-slate-300'}`}>
+                            <button onClick={() => setCurrentQ({...currentQ, correct: idx})} className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${currentQ.correct === idx ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-slate-300'}`}>
                                {currentQ.correct === idx && <Check size={14} />}
                             </button>
                             <input 
@@ -832,7 +887,8 @@ export default function App() {
               </>
            ) : (
               <>
-                 {activeTab === 'DASH' && <TeacherDash user={user!} tests={tests} onCreate={() => setIsCreating(true)} />}
+                 {activeTab === 'DASH' && <TeacherDash user={user!} tests={tests} onCreate={() => setIsCreating(true)} onReports={() => setActiveTab('REPORTS')} />}
+                 {activeTab === 'REPORTS' && <TeacherReports attempts={attempts} tests={tests} />}
                  {activeTab === 'CREATE' && <div className="p-8 text-center text-slate-400">Tap Create on Dashboard</div>}
                  {activeTab === 'PROFILE' && (
                     <div className="pt-12 px-6 flex flex-col items-center">

@@ -1,5 +1,5 @@
 {
-  "name": "NexusExam - AI MCQ Platform",
-  "description": "A comprehensive Online MCQ Test Application featuring distinct Teacher/Student roles, AI-assisted question generation, real-time testing, and detailed analytics. Includes a built-in Product Design Architecture (PDA) documentation viewer.",
+  "name": "JMC-CS MCQ PLATFORM",
+  "description": "A Computer Science MCQ Test Application featuring distinct Teacher/Student roles, AI-assisted question generation, real-time testing, and detailed analytics.",
   "requestFramePermissions": []
 }
